@@ -104,10 +104,11 @@ router.get(
       }
      */
 
+    // console.log(' req=> ', req)
     const isRelease = req.query.isRelease
-    const name = req.query.name || ''
-    const movies = await controllerMovie.getMovies(isRelease, name)
-    const result = { isRelease, data: movies }
+    const id = req.query.id || null
+    const movies = await controllerMovie.getMovies(isRelease, id)
+    const result = { data: movies }
     serviceResponse.success(res, result)
   })
 )

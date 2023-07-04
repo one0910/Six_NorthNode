@@ -1,8 +1,7 @@
 const mongoose = require('mongoose')
 
-const modelExample = mongoose.model(
-  'movie',
-  new mongoose.Schema({
+const movieSchema = new mongoose.Schema(
+  {
     name: {
       type: String,
       required: [true, 'name 未填寫']
@@ -54,9 +53,29 @@ const modelExample = mongoose.model(
     }
   }, {
     toJSON: {
-      versionKey: false
+      versionKey: false,
+      virtuals: true
+    },
+    toObject: {
+      virtuals: true
     }
-  })
+  }
 )
 
-module.exports = modelExample
+movieSchema.virtual('screens', {
+  ref: 'screens',
+  foreignField: 'movie',
+  localField: '_id'
+})
+
+// movieSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: 'theater',
+//     select: 'theaterType'
+//   })
+//   next()
+// })
+
+const Movie = mongoose.model('movie', movieSchema)
+
+module.exports = Movie

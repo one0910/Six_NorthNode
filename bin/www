@@ -8,33 +8,25 @@ const app = require('../app')
 const debug = require('debug')('six-homework:server')
 const http = require('http')
 const config = require('../utilities/config')
+const connectSocketIO = require('./socket-io')
 
-/**
- * Get port from environment and store in Express.
- */
-
+/** * Get port from environment and store in Express. */
 const port = normalizePort(config.PORT || '3000')
 app.set('port', port)
 
-/**
- * Create HTTP server.
- */
-
+/** * Create HTTP server. */
 const server = http.createServer(app)
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+/** 這邊建立一個webSocket.IO */
+connectSocketIO(server)
 
+/** * Listen on provided port, on all network interfaces. */
 server.listen(port)
 server.on('error', onError)
 server.on('listening', onListening)
 
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort (val) {
+/** * Normalize a port into a number, string, or false. */
+function normalizePort(val) {
   const port = parseInt(val, 10)
 
   if (isNaN(port)) {
@@ -50,11 +42,8 @@ function normalizePort (val) {
   return false
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError (error) {
+/** * Event listener for HTTP server "error" event. */
+function onError(error) {
   if (error.syscall !== 'listen') {
     throw error
   }
@@ -78,15 +67,10 @@ function onError (error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening () {
+/** * Event listener for HTTP server "listening" event. */
+function onListening() {
   console.log('Listening on ' + port)
   const addr = server.address()
-  const bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
   debug('Listening on ' + bind)
 }

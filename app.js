@@ -22,6 +22,7 @@ const routeMember = require('./routes/routeMember')
 const routeAdmin = require('./routes/routeAdmin')
 const routeMovie = require('./routes/routeMovie')
 const routeScreen = require('./routes/routeScreen')
+const routeOrder = require('./routes/routeOrder')
 
 // Set up middleware
 app.use(logger('dev')) // 設定 morgan 的 logger，可以在 server 端看到請求的細節
@@ -38,6 +39,7 @@ app.use('/api/member', routeMember)
 app.use('/api/admin', routeAdmin)
 app.use('/api/movie', routeMovie)
 app.use('/api/screens', routeScreen)
+app.use('/api/order', routeOrder)
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerFile)) // 設定 swagger 的路由
 
 // Set up error handling
