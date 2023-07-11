@@ -1,10 +1,13 @@
-const convertPlayDateFormat = (palyDate) => {
-  const date = new Date(palyDate)
-  const year = date.getFullYear()
-  const month = (date.getMonth() + 1).toString().padStart(2, '0')
-  // const day = date.toISOString().substring(8, 10)
-  const day = date.getDate().toString().padStart(2, '0')
-  // const weekday = ["(日)", "(一)", "(二)", "(三)", "(四)", "(五)", "(六)"][date.getDay()]
+const moment = require('moment-timezone')
+
+const convertPlayDateFormat = (playDate) => {
+  // 使用 Moment.js 轉換日期到指定的時區
+  const date = moment(playDate).tz('Asia/Taipei')
+
+  const year = date.year()
+  const month = (date.month() + 1).toString().padStart(2, '0')
+  const day = date.date().toString().padStart(2, '0')
+
   const weekdays = {
     0: '(日)',
     1: '(一)',
@@ -14,11 +17,13 @@ const convertPlayDateFormat = (palyDate) => {
     5: '(五)',
     6: '(六)'
   }
-  const weekday = weekdays[date.getDay()]
+
+  const weekday = weekdays[date.day()]
   const dateFormatted = `${year}/${month}/${day} ${weekday}`
-  // const timeFormatted = date.toISOString().substring(11, 16)
-  const hours = date.getHours()
-  const minutes = date.getMinutes().toString().padStart(2, '0')
+
+  const hours = date.hours()
+  const minutes = date.minutes().toString().padStart(2, '0')
+
   return {
     year,
     date: dateFormatted,
