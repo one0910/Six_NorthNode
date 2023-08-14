@@ -65,6 +65,10 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: [true, '需傳入total(總共花費)']
     },
+    payMethod: {
+      type: String,
+      required: [true, '需傳入payMethod(付款方式)']
+    },
     status: {
       type: String,
       required: [true, '需傳入status(使用者是否快速購票)']

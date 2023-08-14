@@ -65,6 +65,7 @@ const controllerOrder = {
       price: req.body.price,
       quantity: req.body.quantity,
       total: req.body.total,
+      payMethod: req.body.payMethod,
       status: req.body.status
     })
     const orderResponse = {}
@@ -76,8 +77,13 @@ const controllerOrder = {
     orderResponse.OrderSeat = ordersObject.seatOrdered.map(item => `[${item}]`).join(' ')
 
     return orderResponse
-  }
+  },
 
+  async getMemberOrder (memberId) {
+    const selectedFields = 'movieName movielevel moviePlayDate moviePlayTime theater_size quantity seatOrdered createTime price payMethod total'
+    const Orders = await Order.find({ memberId }).select(selectedFields)
+    return Orders
+  }
 }
 
 module.exports = controllerOrder

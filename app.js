@@ -7,12 +7,15 @@ const cors = require('cors')
 const serviceDB = require('@/services/serviceDB') // 引入自訂的 serviceDB
 const swaggerUi = require('swagger-ui-express') // 引入 swagger-ui-express
 const swaggerFile = require('./swagger_output.json')
+const config = require('@/utilities/config')
 
 // 引入 swagger 的 json 檔案
 const app = express() // 建立 express 的實體
 serviceDB.connections() // 建立資料庫連線
 
 // Load middleware
+require('./utilities/passportGoogleSSO')
+const passport = require('passport')
 const middlewareError = require('@/middlewares/middlewareError')
 
 // Load routes 請使用 ./ 引入不然 swagger 會找不到
@@ -21,8 +24,11 @@ const routeUpload = require('./routes/routeUpload') // 引入自訂的 routeUplo
 const routeMember = require('./routes/routeMember')
 const routeAdmin = require('./routes/routeAdmin')
 const routeMovie = require('./routes/routeMovie')
+const routeGoogle = require('./routes/routerGoogle')
 const routeScreen = require('./routes/routeScreen')
 const routeOrder = require('./routes/routeOrder')
+const routeMail = require('./routes/routeMail')
+const session = require('express-session')
 
 // Set up middleware
 app.use(logger('dev')) // 設定 morgan 的 logger，可以在 server 端看到請求的細節
@@ -30,17 +36,36 @@ app.use(express.json()) // 設定 express 可以解析 json
 app.use(express.urlencoded({ extended: false })) // 設定 express 可以解析 urlencoded
 app.use(cookieParser()) // 設定 cookieParser
 app.use(express.static(path.join(__dirname, 'public'))) // 設定 express 可以讀取 public 資料夾內的檔案
-app.use(cors()) // 設定 cors
+
+// 設定 cors
+app.use(cors({
+  origin: config.FRONTEND_HOST,
+  methods: 'GET,POST,PUT,DELETE',
+  credentials: true
+}))
+
+// 啟用session
+app.use(
+  session({
+    secret: 'ellontest',
+    resave: true,
+    saveUninitialized: true,
+    cookie: { maxAge: 100 * 1000 }
+  }))
+app.use(passport.initialize())
+app.use(passport.session())
 
 // Set up routes 請使用 /api/xxx
 app.use('/api/example', routeExample)
 app.use('/api/upload', routeUpload)
-app.use('/api/member', routeMember)
 app.use('/api/admin', routeAdmin)
+app.use('/api/member', routeMember)
 app.use('/api/movie', routeMovie)
 app.use('/api/screens', routeScreen)
 app.use('/api/order', routeOrder)
+app.use('/api/mail', routeMail)
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerFile)) // 設定 swagger 的路由
+app.use('/api/google', routeGoogle)
 
 // Set up error handling
 app.use(middlewareError) // 設定錯誤處理

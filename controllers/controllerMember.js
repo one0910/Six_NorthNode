@@ -20,15 +20,15 @@ const controllerMember = {
     }
     const createRes = await modelMember.create(data)
     const signinToken = serviceJWT.generateJWT(createRes)
-    const result = { token: signinToken, createRes }
+    const result = { token: signinToken, signinRes: createRes }
     return result
   },
+
   // 登入
   async signin (email, password) {
     const signinRes = await modelMember.findOne({ email }).select('+password')
-
     if (signinRes === null) {
-      throw serviceResponse.error(httpCode.NOT_FOUND, '帳號不存在')
+      throw serviceResponse.error(httpCode.NOT_FOUND, '此帳號不存在')
     }
 
     const compare = await hash.compare(password, signinRes.password)
@@ -45,14 +45,19 @@ const controllerMember = {
       token: signinToken,
       signinRes
     }
-
     return authData
   },
   // 單純修改密碼
   async changePassword (user, password) {
     const newPassword = await hash.password(password)
-    const editPassword = await modelMember.findByIdAndUpdate(user, { password: newPassword }, { returnDocument: 'after', runValidators: true })
-
+    const editPassword = await modelMember.findByIdAndUpdate(
+      user,
+      { password: newPassword },
+      {
+        returnDocument: 'after',
+        runValidators: true
+      })
+    console.log('editPassword => ', editPassword)
     return editPassword
   },
   // 確認信箱是否重複
@@ -77,6 +82,24 @@ const controllerMember = {
   async updateUser ({ user, nickName, phoneNumber, birthday, profilePic }) {
     const result = await modelMember.findByIdAndUpdate(user, { nickName, phoneNumber, birthday, profilePic }, { returnDocument: 'after', runValidators: true, new: true })
     return result
+  },
+  async googleLogin (userData) {
+    const googleMemberData = await modelMember.findOne({ googleId: userData.id })
+    if (googleMemberData) {
+      const memberToken = serviceJWT.generateJWT(googleMemberData)
+      memberToken.password = null
+      return { token: memberToken, signinRes: googleMemberData }
+    } else {
+      const data = {
+        googleId: userData.id,
+        email: userData.emails[0].value,
+        nickName: userData.displayName,
+        profilePic: userData.photos[0].value
+      }
+      const newMember = await modelMember.create(data)
+      const memberToken = serviceJWT.generateJWT(newMember)
+      return { token: memberToken, createRes: newMember }
+    }
   }
 }
 

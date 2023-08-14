@@ -5,7 +5,7 @@
     "title": "META API",
     "description": "API文件"
   },
-  "host": "six-northnode.onrender.com",
+  "host": "cool-movie-project-back-end.onrender.com",
   "basePath": "/",
   "tags": [],
   "schemes": [
@@ -44,6 +44,148 @@
                 "data": {
                   "type": "string",
                   "example": "Hello World"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/signup": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "管理員註冊",
+        "description": "管理員註冊",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "type": "object",
+            "required": "true",
+            "description": "會員註冊用",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "example@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "name"
+                }
+              },
+              "required": [
+                "email",
+                "password",
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "回傳範例資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "name"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "example@gmail.com"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "$2a$12$ZNPx7mwkP0/QC6h6eaW5eeuJXdEQrolyIejEZEc55p2doi3C6g/3q"
+                    },
+                    "role": {
+                      "type": "string",
+                      "example": "admin"
+                    },
+                    "_id": {
+                      "type": "string",
+                      "example": "644f92cfcb3582d71cee8d80"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-05-01T10:22:07.078Z"
+                    }
+                  }
+                },
+                "token": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NGY5MmNmY2IzNTgyZDcxY2VlOGQ4MCIsImlhdCI6MTY4MjkzNjUyNywiZXhwIjoxNjgzNTQxMzI3fQ.yt4zPWEnxZ5Vj49Mcsq61j1qo4Bv0pfdH8GbJazkyE0"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/login": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "管理員登入",
+        "description": "管理員登入",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "type": "object",
+            "required": "true",
+            "description": "會員註冊用",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "example@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                }
+              },
+              "required": [
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "回傳範例資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "string",
+                  "example": "登入成功"
                 }
               },
               "xml": {
@@ -1022,148 +1164,6 @@
         ]
       }
     },
-    "/api/admin/signup": {
-      "post": {
-        "tags": [
-          "Admin"
-        ],
-        "summary": "管理員註冊",
-        "description": "管理員註冊",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "type": "object",
-            "required": "true",
-            "description": "會員註冊用",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "example@gmail.com"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "password"
-                },
-                "name": {
-                  "type": "string",
-                  "example": "name"
-                }
-              },
-              "required": [
-                "email",
-                "password",
-                "name"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "回傳範例資料",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "example": "name"
-                    },
-                    "email": {
-                      "type": "string",
-                      "example": "example@gmail.com"
-                    },
-                    "password": {
-                      "type": "string",
-                      "example": "$2a$12$ZNPx7mwkP0/QC6h6eaW5eeuJXdEQrolyIejEZEc55p2doi3C6g/3q"
-                    },
-                    "role": {
-                      "type": "string",
-                      "example": "admin"
-                    },
-                    "_id": {
-                      "type": "string",
-                      "example": "644f92cfcb3582d71cee8d80"
-                    },
-                    "createdAt": {
-                      "type": "string",
-                      "example": "2023-05-01T10:22:07.078Z"
-                    }
-                  }
-                },
-                "token": {
-                  "type": "string",
-                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NGY5MmNmY2IzNTgyZDcxY2VlOGQ4MCIsImlhdCI6MTY4MjkzNjUyNywiZXhwIjoxNjgzNTQxMzI3fQ.yt4zPWEnxZ5Vj49Mcsq61j1qo4Bv0pfdH8GbJazkyE0"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/admin/login": {
-      "post": {
-        "tags": [
-          "Admin"
-        ],
-        "summary": "管理員登入",
-        "description": "管理員登入",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "type": "object",
-            "required": "true",
-            "description": "會員註冊用",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "example@gmail.com"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "password"
-                }
-              },
-              "required": [
-                "email",
-                "password"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "回傳範例資料",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "string",
-                  "example": "登入成功"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/movie/": {
       "post": {
         "tags": [
@@ -2031,6 +2031,158 @@
             }
           }
         }
+      }
+    },
+    "/api/order/getMemberOrder": {
+      "get": {
+        "tags": [
+          "Screen"
+        ],
+        "summary": "所選擇電影可上映的日期",
+        "description": "傳入screenId，來得到該電影的可訂票日期",
+        "parameters": [
+          {
+            "name": "memberId\r",
+            "in": "query"
+          },
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "screenId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "回傳範例資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "自行填寫"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "example": "5/20"
+                      },
+                      "screenId": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mail/orderMail": {
+      "post": {
+        "tags": [
+          "Screen"
+        ],
+        "summary": "所選擇電影可上映的日期",
+        "description": "傳入screenId，來得到該電影的可訂票日期",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "screenId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "回傳範例資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "自行填寫"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "example": "5/20"
+                      },
+                      "screenId": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/login": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/google/callback": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/google/login/success": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
       }
     }
   },

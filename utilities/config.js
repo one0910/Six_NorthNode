@@ -5,7 +5,9 @@ module.exports = {
   DATABASE: process.env.DATABASE,
   DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
   PORT: process.env.PORT,
-  HOST: process.env.NODE_ENV === 'development' ? 'localhost:3000' : 'six-northnode.onrender.com',
+  HOST: process.env.NODE_ENV === 'development' ? 'localhost:3000' : 'cool-movie-project-back-end.onrender.com',
+  ROOT_HOST: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://cool-movie-project-back-end.onrender.com',
+  FRONTEND_HOST: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://cool-movie-project-front-end-test.onrender.com',
   JWT_SECRET: process.env.JWT_SECRET,
   FIRE_BASE: {
     TYPE: process.env.FIRE_BASE_TYPE,

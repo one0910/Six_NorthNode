@@ -61,6 +61,7 @@ function connectSocketIO (server) {
         socket.broadcast.to(screenId).emit('reurnSeatStatus', seatData.find(screen => screen.screenId === screenId))
       }
       if (leave) {
+        console.log(' seatData_leave=> ', seatData)
         socket.leave(screenId)
         socket.disconnect()
       }

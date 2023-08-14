@@ -5,7 +5,6 @@ const serviceError = require('@/services/serviceError')
 const serviceResponse = require('@/services/serviceResponse')
 const httpCode = require('@/utilities/httpCode')
 const middlewareAuth = require('@/middlewares/middlewareAuth')
-
 const controllerMember = require('@/controllers/controllerMember')
 
 // 註冊
@@ -259,91 +258,93 @@ router.post('/checkEmail', serviceError.asyncError(async (req, res, next) => {
 }))
 
 // 修改密碼
-router.post('/changePassword', middlewareAuth.loginAuth, serviceError.asyncError(async (req, res, next) => {
-  /**
-   * #swagger.tags = ['User']
-   * #swagger.security = [{ 'apiKeyAuth': [] }]
-   * #swagger.summary = '修改會員密碼'
-   * #swagger.description = '修改會員密碼'
-   * #swagger.parameters['body'] = {
-      in: 'body',
-      type: 'object',
-      required: 'true',
-      description: '修改會員密碼用',
-      schema:{
-              "$password": 'password',
-              "$confirmPassword": 'password',
-          }
-    }
-    * #swagger.responses[200] = {
-      description: '回傳物件',
-      schema: {
-        "status": true,
-        "data": {
-          "_id": "644cce67945042a407ed1c21",
-           "email": "z2@gmail.com",
-           "nickName": "aaa",
-           "profilePic": "上傳圖片回傳的URL",
-           "createdAt": "2023-04-29T07:59:35.033Z",
-           "updatedAt": "2023-04-29T08:36:48.175Z",
-           "__v": 0,
-           "birthday": "2023-04-29T08:20:13.000Z",
-           "phoneNumber": "0912345678"
-        },
+router.post('/changePassword',
+  middlewareAuth.loginAuth,
+  serviceError.asyncError(async (req, res, next) => {
+    /**
+     * #swagger.tags = ['User']
+     * #swagger.security = [{ 'apiKeyAuth': [] }]
+     * #swagger.summary = '修改會員密碼'
+     * #swagger.description = '修改會員密碼'
+     * #swagger.parameters['body'] = {
+        in: 'body',
+        type: 'object',
+        required: 'true',
+        description: '修改會員密碼用',
+        schema:{
+                "$password": 'password',
+                "$confirmPassword": 'password',
+            }
       }
-    }
-    * #swagger.responses[406] = {
-      description: '密碼不一致',
-      schema: {
-        "status": false,
-        "message": "密碼不一致",
-        "error": {
-        "statusCode": 406,
-        "isOperational": true
-        },
+      * #swagger.responses[200] = {
+        description: '回傳物件',
+        schema: {
+          "status": true,
+          "data": {
+            "_id": "644cce67945042a407ed1c21",
+             "email": "z2@gmail.com",
+             "nickName": "aaa",
+             "profilePic": "上傳圖片回傳的URL",
+             "createdAt": "2023-04-29T07:59:35.033Z",
+             "updatedAt": "2023-04-29T08:36:48.175Z",
+             "__v": 0,
+             "birthday": "2023-04-29T08:20:13.000Z",
+             "phoneNumber": "0912345678"
+          },
+        }
       }
-    }
-    * #swagger.responses[402] = {
-      description: '密碼不能為空',
-      schema: {
-        "status": false,
-        "message": "密碼不能為空",
-        "error": {
-        "statusCode": 402,
-        "isOperational": true
-        },
+      * #swagger.responses[406] = {
+        description: '密碼不一致',
+        schema: {
+          "status": false,
+          "message": "密碼不一致",
+          "error": {
+          "statusCode": 406,
+          "isOperational": true
+          },
+        }
       }
-    }
-    * #swagger.responses[400] = {
-      description: '密碼強度',
-      schema: {
-        "status": false,
-        "message": "密碼長度至少8位、須包含數字與英文",
-        "error": {
-        "statusCode": 400,
-        "isOperational": true
-        },
+      * #swagger.responses[402] = {
+        description: '密碼不能為空',
+        schema: {
+          "status": false,
+          "message": "密碼不能為空",
+          "error": {
+          "statusCode": 402,
+          "isOperational": true
+          },
+        }
       }
+      * #swagger.responses[400] = {
+        description: '密碼強度',
+        schema: {
+          "status": false,
+          "message": "密碼長度至少8位、須包含數字與英文",
+          "error": {
+          "statusCode": 400,
+          "isOperational": true
+          },
+        }
+      }
+     */
+    // 從jwt取得使用者id
+    const { user } = req
+    const { password, confirmPassword } = req.body
+    if (!password || !confirmPassword) {
+      throw next(serviceResponse.error(httpCode.PAYMENT_REQUIRED, '密碼不能為空'))
     }
-   */
-  // 從jwt取得使用者id
-  const { user } = req
-  const { password, confirmPassword } = req.body
-  if (!password || !confirmPassword) {
-    throw next(serviceResponse.error(httpCode.PAYMENT_REQUIRED, '密碼不能為空'))
-  }
 
-  if (password !== confirmPassword) {
-    throw next(serviceResponse.error(httpCode.NOT_ACCEPTABLE, '密碼不一致'))
-  }
+    if (password !== confirmPassword) {
+      throw next(serviceResponse.error(httpCode.NOT_ACCEPTABLE, '密碼不一致'))
+    }
 
-  if (!validator.isStrongPassword(password, { minLength: 8, minSymbols: 0, minUppercase: 0 })) {
-    throw serviceResponse.error(httpCode.BAD_REQUEST, '密碼長度至少8位、須包含數字與英文')
-  }
+    if (!validator.isStrongPassword(password, { minLength: 8, minSymbols: 0, minUppercase: 0 })) {
+      throw serviceResponse.error(httpCode.BAD_REQUEST, '密碼長度至少8位、須包含數字與英文')
+    }
 
-  const result = await controllerMember.changePassword(user, password)
-  serviceResponse.success(res, result)
-}))
+    const result = await controllerMember.changePassword(user, password)
+    serviceResponse.success(res, result)
+  }))
 
 // 取得會員資料
 router.get('/getUser', middlewareAuth.loginAuth, serviceError.asyncError(async (req, res, next) => {
