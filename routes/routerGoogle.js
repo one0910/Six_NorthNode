@@ -20,7 +20,9 @@ router.get('/callback',
 )
 
 router.get('/login/success', serviceError.asyncError(async (req, res, next) => {
+  console.log(4)
   console.log('success_req_uesr => ', req.user._doc)
+  console.log(5)
   const data = { signinRes: null, token: '' }
   data.signinRes = req.user
   data.token = serviceJWT.generateJWT(req.user)
