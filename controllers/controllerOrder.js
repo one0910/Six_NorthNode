@@ -83,7 +83,13 @@ const controllerOrder = {
     const selectedFields = 'movieName movielevel moviePlayDate moviePlayTime theater_size quantity seatOrdered createTime price payMethod total'
     const Orders = await Order.find({ memberId }).select(selectedFields)
     return Orders
+  },
+  async getOrderData (orderId) {
+    const selectedFields = 'movieName moviePlayDate moviePlayTime seatOrdered theater_size status userEmail'
+    const Orders = await Order.findById({ _id: orderId }).select(selectedFields)
+    return Orders
   }
+
 }
 
 module.exports = controllerOrder

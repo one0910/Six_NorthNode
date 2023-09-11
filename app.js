@@ -50,7 +50,7 @@ app.use(
     secret: 'ellontest',
     resave: true,
     saveUninitialized: true,
-    cookie: { maxAge: 100 * 1000 }
+    cookie: { maxAge: 1000 * 60 * 10 } /* 該seesion的過期時間，單位為毫秒，所以為1000毫秒為1秒，乘上600，所以總共600秒(10分鐘) */
   }))
 app.use(passport.initialize())
 app.use(passport.session())
