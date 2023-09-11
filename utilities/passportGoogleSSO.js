@@ -29,6 +29,7 @@ async (accessToken, refreshToken, profile, cb) => {
 passport.serializeUser((memberData, cb) => {
   console.log(1)
   console.log('serializeUser_memberData=> ', memberData._doc)
+  console.log('passport.deserializeUser=> ', passport.deserializeUser)
   cb(null, memberData.googleId)
 })
 
