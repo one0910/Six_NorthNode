@@ -13,7 +13,7 @@ const config = require('@/utilities/config')
 const app = express() // 建立 express 的實體
 serviceDB.connections() // 建立資料庫連線
 
-// Load middleware
+// 這裡先將google登入的passport初始化
 require('./utilities/passportGoogleSSO')
 const passport = require('passport')
 const middlewareError = require('@/middlewares/middlewareError')

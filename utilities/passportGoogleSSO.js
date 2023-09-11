@@ -9,6 +9,7 @@ passport.use(new GoogleStrategy({
   callbackURL: `${config.ROOT_HOST}/api/google/callback`
 },
 async (accessToken, refreshToken, profile, cb) => {
+  console.log('profile => ', profile)
   const googleMemberData = await modelMember.findOne({ googleId: profile.id })
   if (googleMemberData) {
     return cb(null, googleMemberData)
@@ -26,10 +27,12 @@ async (accessToken, refreshToken, profile, cb) => {
 ))
 
 passport.serializeUser((memberData, cb) => {
+  console.log('serializeUser_memberData=> ', memberData._doc)
   cb(null, memberData.googleId)
 })
 
 passport.deserializeUser(async (id, cb) => {
+  console.log('deserializeUser_memberData_id=> ', id)
   const memberData = await modelMember.findOne({ googleId: id }).catch(err => {
     cb(err, null)
   })
