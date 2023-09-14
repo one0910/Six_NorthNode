@@ -8,37 +8,36 @@ passport.use(new GoogleStrategy({
   clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
   callbackURL: `${config.ROOT_HOST}/api/google/callback`
 },
-async (accessToken, refreshToken, profile, cb) => {
-  console.log('profile => ', profile)
-  const googleMemberData = await modelMember.findOne({ googleId: profile.id })
-  if (googleMemberData) {
-    return cb(null, googleMemberData)
-  } else {
-    const data = {
-      googleId: profile.id,
-      email: profile.emails[0].value,
-      nickName: profile.displayName,
-      profilePic: profile.photos[0].value
+  async (accessToken, refreshToken, profile, cb) => {
+    const googleMemberData = await modelMember.findOne({ googleId: profile.id })
+    if (googleMemberData) {
+      return cb(null, googleMemberData)
+    } else {
+      const data = {
+        googleId: profile.id,
+        email: profile.emails[0].value,
+        nickName: profile.displayName,
+        profilePic: profile.photos[0].value
+      }
+      const newMember = await modelMember.create(data)
+      return cb(null, newMember)
     }
-    const newMember = await modelMember.create(data)
-    return cb(null, newMember)
   }
-}
 ))
 
 passport.serializeUser((memberData, cb) => {
-  console.log(1)
-  console.log('serializeUser_memberData=> ', memberData._doc)
-  console.log('passport.deserializeUser=> ', passport.deserializeUser)
+  console.log(' serializeUser_memberData=> ', memberData)
   cb(null, memberData.googleId)
 })
 
-passport.deserializeUser(async (id, cb) => {
-  console.log(2)
-  console.log('deserializeUser_memberData_id=> ', id)
-  const memberData = await modelMember.findOne({ googleId: id }).catch(err => {
-    cb(err, null)
-  })
-  console.log(3)
-  if (memberData) cb(null, memberData)
+passport.deserializeUser((id, cb) => {
+  console.log('deserializeUser_id=> ', id)
+  cb(null, id)
 })
+
+// passport.deserializeUser(async (id, cb) => {
+//   const memberData = await modelMember.findOne({ googleId: id }).catch(err => {
+//     cb(err, null)
+//   })
+//   if (memberData) cb(null, memberData)
+// })
