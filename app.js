@@ -37,6 +37,8 @@ app.use(express.urlencoded({ extended: false })) // 設定 express 可以解析 
 app.use(cookieParser()) // 設定 cookieParser
 app.use(express.static(path.join(__dirname, 'public'))) // 設定 express 可以讀取 public 資料夾內的檔案
 
+console.log('config.FRONTEND_HOST=> ', config.FRONTEND_HOST)
+
 // 設定 cors
 app.use(cors({
   origin: config.FRONTEND_HOST,
@@ -48,7 +50,7 @@ app.use(cors({
 app.use(
   session({
     secret: 'ellontest',
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie: { maxAge: 1000 * 60 * 10 } /* 該seesion的過期時間，單位為毫秒，所以為1000毫秒為1秒，乘上600，所以總共600秒(10分鐘) */
   }))

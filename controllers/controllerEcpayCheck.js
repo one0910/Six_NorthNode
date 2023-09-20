@@ -9,12 +9,11 @@ const options = {
     HashIV: HASHIV
   },
   IgnorePayment: [
-    //    "Credit",
-    //    "WebATM",
     'ATM',
     'CVS',
     'BARCODE',
-    'AndroidPay'
+    'AndroidPay',
+    'ApplePay'
   ],
   IsProjectContractor: false
 }
@@ -22,7 +21,7 @@ const options = {
 const controllerEcpayCheck = {
   async check (req) {
     req.session.orderData = req.body
-    console.log('check_req => ', req)
+    console.log(' req.session.orderData => ', req.session.orderData)
     const MerchantTradeDate = new Date().toLocaleString('zh-TW', {
       year: 'numeric',
       month: '2-digit',
