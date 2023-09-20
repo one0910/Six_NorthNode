@@ -7,12 +7,10 @@ passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_AUTH_CLIENTID,
   clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
   callbackURL: `${config.ROOT_HOST}/api/google/callback`,
-  passReqToCallback: true,
-  scope: ['profile', 'email']
+  passReqToCallback: true
 },
 async (req, accessToken, refreshToken, profile, cb) => {
-  console.log(' req=> ', req)
-  console.log(' profile=> ', profile)
+  console.log(' req.session=> ', req.session)
   const googleMemberData = await modelMember.findOne({ googleId: profile.id })
   if (googleMemberData) {
     return cb(null, googleMemberData)
@@ -30,7 +28,6 @@ async (req, accessToken, refreshToken, profile, cb) => {
 ))
 
 passport.serializeUser((memberData, cb) => {
-  console.log(' serializeUser_memberData=> ', memberData)
   cb(null, memberData.googleId)
 })
 
