@@ -6,7 +6,8 @@ const modelMember = require('@/models/modelMember')
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_AUTH_CLIENTID,
   clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
-  callbackURL: `${config.ROOT_HOST}/api/google/callback`
+  callbackURL: `${config.ROOT_HOST}/api/google/callback`,
+  passReqToCallback: true
 },
 async (req, accessToken, refreshToken, profile, cb) => {
   console.log('profile.id => ', profile.id)
