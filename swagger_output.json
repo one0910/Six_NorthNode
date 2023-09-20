@@ -2328,6 +2328,14 @@
         "parameters": [],
         "responses": {}
       }
+    },
+    "/api/google/logout": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
     }
   },
   "definitions": {}

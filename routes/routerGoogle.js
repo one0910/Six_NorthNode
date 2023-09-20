@@ -20,13 +20,21 @@ router.get('/callback',
 )
 
 router.get('/login/success', serviceError.asyncError(async (req, res, next) => {
-  console.log(4)
-  console.log('success_req_uesr => ', req.user._doc)
-  console.log(5)
+  console.log('success_req => ', req)
   const data = { signinRes: null, token: '' }
   data.signinRes = req.user
   data.token = serviceJWT.generateJWT(req.user)
   serviceResponse.success(res, data)
 }))
+
+router.get('/logout',
+  serviceError.asyncError(async (req, res, next) => {
+    req.session.destroy(() => {
+      res.clearCookie('connect.sid')
+      // res.redirect(config.FRONTEND_HOST)
+    })
+    console.log(' req_logout=> ', req)
+  })
+)
 
 module.exports = router

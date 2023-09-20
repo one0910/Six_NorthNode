@@ -37,8 +37,6 @@ app.use(express.urlencoded({ extended: false })) // 設定 express 可以解析 
 app.use(cookieParser()) // 設定 cookieParser
 app.use(express.static(path.join(__dirname, 'public'))) // 設定 express 可以讀取 public 資料夾內的檔案
 
-console.log('process.env.NODE_ENV => ', process.env.NODE_ENV)
-console.log('config.FRONTEND_HOST => ', config.FRONTEND_HOST)
 // 設定 cors
 app.use(cors({
   origin: config.FRONTEND_HOST,

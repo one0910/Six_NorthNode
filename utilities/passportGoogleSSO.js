@@ -6,10 +6,15 @@ const modelMember = require('@/models/modelMember')
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_AUTH_CLIENTID,
   clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
-  callbackURL: `${config.ROOT_HOST}/api/google/callback`
+  callbackURL: `${config.ROOT_HOST}/api/google/callback`,
+  passReqToCallback: true,
+  scope: ['profile', 'email']
 },
-async (accessToken, refreshToken, profile, cb) => {
-  console.log('profile => ', profile)
+async (req, accessToken, refreshToken, profile, cb) => {
+  console.log('profile.id => ', profile.id)
+  // req.session.googleId = profile.id
+  req.session.googleId = profile.id
+  console.log(' req=> ', req)
   const googleMemberData = await modelMember.findOne({ googleId: profile.id })
   if (googleMemberData) {
     return cb(null, googleMemberData)
@@ -27,18 +32,13 @@ async (accessToken, refreshToken, profile, cb) => {
 ))
 
 passport.serializeUser((memberData, cb) => {
-  console.log(1)
-  console.log('serializeUser_memberData=> ', memberData._doc)
-  console.log('passport.deserializeUser=> ', passport.deserializeUser)
   cb(null, memberData.googleId)
 })
 
 passport.deserializeUser(async (id, cb) => {
-  console.log(2)
-  console.log('deserializeUser_memberData_id=> ', id)
+  console.log('deserializeUser_id => ', id)
   const memberData = await modelMember.findOne({ googleId: id }).catch(err => {
     cb(err, null)
   })
-  console.log(3)
   if (memberData) cb(null, memberData)
 })
