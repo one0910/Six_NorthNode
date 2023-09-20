@@ -28,7 +28,11 @@ async (req, accessToken, refreshToken, profile, cb) => {
 ))
 
 passport.serializeUser((memberData, cb) => {
-  cb(null, memberData.googleId)
+  console.log(' serializeUser_memberData_doc=> ', memberData._doc)
+  process.nextTick(function () {
+    return cb(null, memberData.googleId)
+  })
+  // cb(null, memberData.googleId)
 })
 
 // passport.deserializeUser((id, cb) => {
