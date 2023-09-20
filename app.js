@@ -1,7 +1,6 @@
 require('module-alias/register') // alias 別名 @ 為根目錄
 const express = require('express')
 const path = require('path')
-const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const cors = require('cors')
 const serviceDB = require('@/services/serviceDB') // 引入自訂的 serviceDB
@@ -34,7 +33,6 @@ const session = require('express-session')
 app.use(logger('dev')) // 設定 morgan 的 logger，可以在 server 端看到請求的細節
 app.use(express.json()) // 設定 express 可以解析 json
 app.use(express.urlencoded({ extended: false })) // 設定 express 可以解析 urlencoded
-app.use(cookieParser()) // 設定 cookieParser
 app.use(express.static(path.join(__dirname, 'public'))) // 設定 express 可以讀取 public 資料夾內的檔案
 
 console.log('config.FRONTEND_HOST=> ', config.FRONTEND_HOST)

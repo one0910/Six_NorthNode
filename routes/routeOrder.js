@@ -83,7 +83,9 @@ router.post(
 router.post(
   '/ecpayCheckout/checkComplete',
   serviceError.asyncError(async (req, res, next) => {
+    console.log('req_checkComplete => ', req)
     console.log('req.session_checkComplete => ', req.session)
+    console.log('req.session.sessionID_checkComplete => ', req.session.id)
     // setInterval(function () {
     //   console.log('check_complete_session_sessionID=>', req.session.id)
     // }, 1000)

@@ -21,7 +21,9 @@ const options = {
 const controllerEcpayCheck = {
   async check (req) {
     req.session.orderData = req.body
+    console.log(' req=> ', req)
     console.log(' req.session.orderData => ', req.session.orderData)
+    console.log(' req.session.sessionID => ', req.session.id)
     const MerchantTradeDate = new Date().toLocaleString('zh-TW', {
       year: 'numeric',
       month: '2-digit',
