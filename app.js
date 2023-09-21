@@ -7,7 +7,6 @@ const serviceDB = require('@/services/serviceDB') // 引入自訂的 serviceDB
 const swaggerUi = require('swagger-ui-express') // 引入 swagger-ui-express
 const swaggerFile = require('./swagger_output.json')
 const config = require('@/utilities/config')
-const cookieSession = require('cookie-session')
 const session = require('express-session')
 
 // 引入 swagger 的 json 檔案
@@ -46,20 +45,17 @@ app.use(cors({
 }))
 
 // 啟用session
+
 app.use(
-  cookieSession({
-    name: 'cookieSession',
-    keys: ['ellontest'],
-    maxAge: 1000 * 60 * 10
-  })
-)
-// app.use(
-//   session({
-//     secret: 'ellontest',
-//     resave: true,
-//     saveUninitialized: true,
-//     cookie: { maxAge: 1000 * 60 * 10 } /* 該seesion的過期時間，單位為毫秒，所以為1000毫秒為1秒，乘上600，所以總共600秒(10分鐘) */
-//   }))
+  session({
+    secret: 'ellontest',
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 1000 * 60 * 10,
+      sameSite: 'none'
+    }
+  }))
 
 app.use(passport.initialize())
 app.use(passport.session())
