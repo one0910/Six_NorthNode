@@ -7,6 +7,8 @@ const serviceDB = require('@/services/serviceDB') // 引入自訂的 serviceDB
 const swaggerUi = require('swagger-ui-express') // 引入 swagger-ui-express
 const swaggerFile = require('./swagger_output.json')
 const config = require('@/utilities/config')
+const cookieSession = require('cookie-session')
+const session = require('express-session')
 
 // 引入 swagger 的 json 檔案
 const app = express() // 建立 express 的實體
@@ -27,7 +29,6 @@ const routeGoogle = require('./routes/routerGoogle')
 const routeScreen = require('./routes/routeScreen')
 const routeOrder = require('./routes/routeOrder')
 const routeMail = require('./routes/routeMail')
-const session = require('express-session')
 
 // Set up middleware
 app.use(logger('dev')) // 設定 morgan 的 logger，可以在 server 端看到請求的細節
@@ -46,12 +47,20 @@ app.use(cors({
 
 // 啟用session
 app.use(
-  session({
-    secret: 'ellontest',
-    resave: true,
-    saveUninitialized: true,
-    cookie: { maxAge: 1000 * 60 * 10 } /* 該seesion的過期時間，單位為毫秒，所以為1000毫秒為1秒，乘上600，所以總共600秒(10分鐘) */
-  }))
+  cookieSession({
+    name: 'cookieSession',
+    keys: ['ellontest'],
+    maxAge: 1000 * 60 * 10
+  })
+)
+// app.use(
+//   session({
+//     secret: 'ellontest',
+//     resave: true,
+//     saveUninitialized: true,
+//     cookie: { maxAge: 1000 * 60 * 10 } /* 該seesion的過期時間，單位為毫秒，所以為1000毫秒為1秒，乘上600，所以總共600秒(10分鐘) */
+//   }))
+
 app.use(passport.initialize())
 app.use(passport.session())
 

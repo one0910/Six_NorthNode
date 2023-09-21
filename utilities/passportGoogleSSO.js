@@ -10,7 +10,7 @@ passport.use(new GoogleStrategy({
   passReqToCallback: true
 },
 async (req, accessToken, refreshToken, profile, cb) => {
-  console.log(' req_sessionStore_new GoogleStrateg=> ', req.sessionStore.sessions)
+  console.log(' req_sessionStore_new GoogleStrateg=> ', req)
   const googleMemberData = await modelMember.findOne({ googleId: profile.id })
   if (googleMemberData) {
     return cb(null, googleMemberData)
