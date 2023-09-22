@@ -39,8 +39,8 @@ console.log('config.FRONTEND_HOST=> ', config.FRONTEND_HOST)
 
 // 設定 cors
 app.use(cors({
-  origin: config.FRONTEND_HOST,
-  methods: 'GET,POST,PUT,DELETE',
+  origin: ['http://localhost:5000', 'https://cool-movie-project-front-end-test.onrender.com'],
+  methods: 'GET,POST,PUT,DELETE,PUT',
   credentials: true
 }))
 
