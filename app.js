@@ -55,8 +55,7 @@ app.use(
     cookie: {
       httpOnly: false,
       maxAge: 1000 * 60 * 10,
-      sameSite: `${(process.env.NODE_ENV === 'development') ? 'strict' : 'none'}`,
-      domain: `${(process.env.NODE_ENV === 'development') ? 'localhost' : 'cool-movie-project-front-end-test.onrender.com'}`
+      sameSite: `${(process.env.NODE_ENV === 'development') ? 'strict' : 'none'}`
     }
   }))
 
