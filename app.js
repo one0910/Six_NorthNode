@@ -54,7 +54,8 @@ app.use(
     cookie: {
       httpOnly: false,
       maxAge: 1000 * 60 * 10,
-      sameSite: 'none'
+      sameSite: 'none',
+      domain: 'cool-movie-project-front-end-test.onrender.com'
     }
   }))
 
