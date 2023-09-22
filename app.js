@@ -36,6 +36,7 @@ app.use(express.urlencoded({ extended: false })) // 設定 express 可以解析 
 app.use(express.static(path.join(__dirname, 'public'))) // 設定 express 可以讀取 public 資料夾內的檔案
 
 console.log('config.FRONTEND_HOST=> ', config.FRONTEND_HOST)
+console.log('process.env=> ', process.env.NODE_ENV)
 
 // 設定 cors
 app.use(cors({
@@ -54,8 +55,7 @@ app.use(
     cookie: {
       httpOnly: false,
       maxAge: 1000 * 60 * 10,
-      sameSite: 'none',
-      domain: 'cool-movie-project-front-end-test.onrender.com'
+      sameSite: `${(process.env.NODE_ENV === 'development') ? 'strict' : 'none'}`
     }
   }))
 
