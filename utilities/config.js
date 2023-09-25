@@ -8,7 +8,7 @@ module.exports = {
   HOST: process.env.NODE_ENV === 'development' ? 'localhost:3000' : 'coolmovie-server.koijinoblog.com',
   ROOT_HOST: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://coolmovie-server.koijinoblog.com',
   FRONTEND_HOST: process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://coolmovie-clinet.koijinoblog.com',
-  COOKIE_SECURE: !`${(process.env.NODE_ENV === 'development')}`,
+  COOKIE_SECURE: process.env.NODE_ENV !== 'development',
   COOKIE_SAMESITE: process.env.NODE_ENV === 'development' ? 'strict' : 'none',
   COOKIE_DOMAIN: process.env.NODE_ENV === 'development' ? 'localhost' : 'koijinoblog.com',
   JWT_SECRET: process.env.JWT_SECRET,
