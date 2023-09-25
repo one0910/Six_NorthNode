@@ -55,7 +55,7 @@ app.use(
     cookie: {
       httpOnly: false,
       maxAge: 1000 * 60 * 10,
-      sameSite: `${(process.env.NODE_ENV === 'development') ? 'strict' : 'none'}`
+      domain: 'koijinoblog.com'
     }
   }))
 
