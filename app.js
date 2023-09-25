@@ -54,8 +54,7 @@ app.use(
     saveUninitialized: true,
     cookie: {
       httpOnly: true,
-      maxAge: 1000 * 60 * 10,
-      domain: 'koijinoblog.com'
+      maxAge: 1000 * 60 * 10
     }
   }))
 
