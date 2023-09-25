@@ -55,7 +55,7 @@ app.use(
       httpOnly: true,
       maxAge: 1000 * 60 * 10,
       domain: config.COOKIE_DOMAIN,
-      sameSite: config.COOKIE_SAMESITE
+      sameSite: 'strict'
     }
   }))
 
