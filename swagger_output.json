@@ -5,7 +5,7 @@
     "title": "META API",
     "description": "API文件"
   },
-  "host": "cool-movie-project-back-end.onrender.com",
+  "host": "coolmovie-server.koijinoblog.com",
   "basePath": "/",
   "tags": [],
   "schemes": [

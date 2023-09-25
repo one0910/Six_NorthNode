@@ -40,7 +40,7 @@ console.log('process.env=> ', process.env.NODE_ENV)
 
 // 設定 cors
 app.use(cors({
-  origin: ['http://localhost:5000', 'https://cool-movie-project-front-end-test.onrender.com'],
+  origin: config.FRONTEND_HOST,
   methods: 'GET,POST,PUT,DELETE,PUT',
   credentials: true
 }))
