@@ -35,8 +35,7 @@ app.use(express.json()) // 設定 express 可以解析 json
 app.use(express.urlencoded({ extended: false })) // 設定 express 可以解析 urlencoded
 app.use(express.static(path.join(__dirname, 'public'))) // 設定 express 可以讀取 public 資料夾內的檔案
 
-console.log('config.FRONTEND_HOST=> ', config.FRONTEND_HOST)
-console.log('process.env=> ', process.env.NODE_ENV)
+console.log('config ', config)
 
 // 設定 cors
 app.use(cors({
@@ -53,11 +52,11 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: {
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 1000 * 60 * 10,
-      domain: `${(process.env.NODE_ENV === 'development') ? 'localhost' : 'koijinoblog.com'}`,
-      sameSite: `${(process.env.NODE_ENV === 'development') ? 'strict' : 'none'}`,
-      secure: !`${(process.env.NODE_ENV === 'development')}`
+      domain: config.COOKIE_DOMAIN,
+      sameSite: config.COOKIE_SAMESITE,
+      secure: config.COOKIE_SECURE
     }
   }))
 
