@@ -53,8 +53,9 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 10
+      httpOnly: false,
+      maxAge: 1000 * 60 * 10,
+      sameSite: `${(process.env.NODE_ENV === 'development') ? 'strict' : 'none'}`
     }
   }))
 
