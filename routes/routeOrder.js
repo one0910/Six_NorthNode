@@ -8,7 +8,9 @@ const serviceResponse = require('@/services/serviceResponse')
 const httpCode = require('@/utilities/httpCode')
 const middlewareOrder = require('@/middlewares/middlewareOrder')
 const config = require('@/utilities/config')
+const { ecpaySession } = require('@/middlewares/middlewareSession')
 
+router.use(ecpaySession)
 router.post(
   '/',
   middlewareOrder,

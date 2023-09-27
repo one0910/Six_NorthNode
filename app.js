@@ -35,32 +35,12 @@ app.use(express.json()) // 設定 express 可以解析 json
 app.use(express.urlencoded({ extended: false })) // 設定 express 可以解析 urlencoded
 app.use(express.static(path.join(__dirname, 'public'))) // 設定 express 可以讀取 public 資料夾內的檔案
 
-console.log('config ', config)
-
 // 設定 cors
 app.use(cors({
   origin: config.FRONTEND_HOST,
   methods: 'GET,POST,PUT,DELETE,PUT',
   credentials: true
 }))
-
-// 啟用session
-
-app.use(
-  session({
-    secret: 'ellontest',
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 10,
-      domain: config.COOKIE_DOMAIN,
-      sameSite: config.COOKIE_SAMESITE
-    }
-  }))
-
-app.use(passport.initialize())
-app.use(passport.session())
 
 // Set up routes 請使用 /api/xxx
 app.use('/api/example', routeExample)

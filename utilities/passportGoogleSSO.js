@@ -35,11 +35,6 @@ passport.serializeUser((memberData, cb) => {
   cb(null, memberData.googleId)
 })
 
-// passport.deserializeUser((id, cb) => {
-//   console.log('deserializeUser_id=> ', id)
-//   cb(null, id)
-// })
-
 passport.deserializeUser(async (id, cb) => {
   console.log('deserializeUser_id=> ', id)
   const memberData = await modelMember.findOne({ googleId: id }).catch(err => {
