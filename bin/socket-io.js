@@ -1,4 +1,6 @@
 const { Server } = require('socket.io')
+const debug = require('debug')
+debug.enable('socket.io:*')
 function connectSocketIO (server) {
   let seatData = []
 
@@ -20,6 +22,23 @@ function connectSocketIO (server) {
         'join_screen',
         '訪客進來了'
       )
+    })
+
+    socket.on('ping', (cb) => {
+      console.log('Received ping from client:', socket.id)
+      const receiveTime = Date.now()
+      cb(receiveTime)
+    })
+
+    socket.on('disconnect', (reason) => {
+      console.log('client disconnected:', socket.id, 'Reason:', reason)
+      if (reason === 'transport close') {
+        seatData.forEach(seatdata => {
+          if (seatdata[socket.id]) {
+            delete seatdata[socket.id]
+          }
+        })
+      }
     })
 
     // 當選擇座位時的頻道
@@ -52,6 +71,7 @@ function connectSocketIO (server) {
     })
 
     socket.on('leaveScreen', ({ socketId, screenId, leave }) => {
+      console.log('leaveScreen_socket.id => ', socket.id)
       if (seatData.find(screen => screen.screenId === screenId)) {
         seatData = seatData.map((seatItem) => {
           const newSeatItem = { ...seatItem }
