@@ -36,8 +36,8 @@ function connectSocketIO (server) {
       seatData.forEach(seatdata => {
         if (seatdata[socket.id]) {
           delete seatdata[socket.id]
-          // socket.to(seatdata.screenId).emit('reurnSeatStatus', seatData.find(screen => screen.screenId === seatdata.screenId))
-          socket.to(seatdata.screenId).emit('reurnSeatStatus', seatdata)
+          socket.to(seatdata.screenId).emit('reurnSeatStatus', seatData.find(screen => screen.screenId === seatdata.screenId))
+          // socket.to(seatdata.screenId).emit('reurnSeatStatus', seatdata)
         }
       })
     })
