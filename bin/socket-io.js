@@ -30,15 +30,16 @@ function connectSocketIO (server) {
       cb(receiveTime)
     })
 
+    // socket中斷時，會把所選的位子清除
     socket.on('disconnect', (reason) => {
       console.log('client disconnected:', socket.id, 'Reason:', reason)
-      if (reason === 'transport close') {
-        seatData.forEach(seatdata => {
-          if (seatdata[socket.id]) {
-            delete seatdata[socket.id]
-          }
-        })
-      }
+      seatData.forEach(seatdata => {
+        if (seatdata[socket.id]) {
+          delete seatdata[socket.id]
+          // socket.to(seatdata.screenId).emit('reurnSeatStatus', seatData.find(screen => screen.screenId === seatdata.screenId))
+          socket.to(seatdata.screenId).emit('reurnSeatStatus', seatdata)
+        }
+      })
     })
 
     // 當選擇座位時的頻道
