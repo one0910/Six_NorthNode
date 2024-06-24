@@ -78,9 +78,20 @@ const controllerMember = {
     const UserData = await modelMember.findById({ _id: user })
     return UserData
   },
+
+  // 取得目前所有會員數量
+  async getUserCount (user) {
+    const userCount = await modelMember.countDocuments({ role: 'user' })
+    return userCount
+  },
+
   // 修改會員資料
   async updateUser ({ user, nickName, phoneNumber, birthday, profilePic }) {
-    const result = await modelMember.findByIdAndUpdate(user, { nickName, phoneNumber, birthday, profilePic }, { returnDocument: 'after', runValidators: true, new: true })
+    const result = await modelMember.findByIdAndUpdate(
+      user,
+      { nickName, phoneNumber, birthday, profilePic },
+      { returnDocument: 'after', runValidators: true, new: true }
+    )
     return result
   },
   async googleLogin (userData) {

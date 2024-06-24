@@ -32,8 +32,8 @@ router.get('/callback',
 // }))
 
 router.get('/login/success', serviceError.asyncError(async (req, res, next) => {
-  console.log('req.session_/login/success => ', req)
-  console.log('req.session_id/login/success => ', req.session.id)
+  // console.log('req.session_/login/success => ', req)
+  // console.log('req.session_id/login/success => ', req.session.id)
   const data = { signinRes: null, token: '' }
   data.signinRes = req.user
   data.token = serviceJWT.generateJWT(req.user)
@@ -46,7 +46,7 @@ router.get('/logout',
       res.clearCookie('google.sid')
       // res.redirect(config.FRONTEND_HOST)
     })
-    console.log(' req_logout=> ', req)
+    // console.log(' req_logout=> ', req)
   })
 )
 

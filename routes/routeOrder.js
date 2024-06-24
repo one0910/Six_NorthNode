@@ -5,8 +5,11 @@ const controllerOrder = require('@/controllers/controllerOrder')
 const controllerEcpayCheck = require('@/controllers/controllerEcpayCheck')
 const controllerMail = require('@/controllers/controllerMail')
 const serviceResponse = require('@/services/serviceResponse')
+const help = require('@/utilities/help')
+
 const httpCode = require('@/utilities/httpCode')
 const middlewareOrder = require('@/middlewares/middlewareOrder')
+const middlewareAuth = require('@/middlewares/middlewareAuth')
 const config = require('@/utilities/config')
 const { ecpaySession } = require('@/middlewares/middlewareSession')
 
@@ -165,6 +168,41 @@ router.get(
     const orderId = req.query.orderId
     const order = await controllerOrder.getOrderData(orderId)
     serviceResponse.success(res, order)
+  })
+)
+
+/* 取得所有定單的筆數 */
+router.get(
+  '/getOrderCount',
+  middlewareAuth.loginAuth,
+  serviceError.asyncError(async (req, res, next) => {
+    /**
+         * #swagger.tags = ['Screen']
+         * #swagger.summary = '所選擇電影可上映的日期'
+         * #swagger.description = '傳入screenId，來得到該電影的可訂票日期'
+         * #swagger.parameters['obj'] = {
+            in: 'body',
+            'schema': {
+                "screenId": ["6459143a5941f29f5db5c201"],
+            }
+        }
+        * #swagger.responses[200] = {
+          description: '回傳範例資料',
+          schema: {
+            "status": "自行填寫",
+            "data":[
+              {
+                "date":"5/20",
+                "screenId":['6459143a5941f29f5db5c201','6459153a5941f29f5db5c203']
+              }
+            ]
+          }
+        }
+         */
+
+    help.checkAdminAccount(req.role)
+    const orderCount = await controllerOrder.getOrderCount()
+    serviceResponse.success(res, { count: orderCount })
   })
 )
 

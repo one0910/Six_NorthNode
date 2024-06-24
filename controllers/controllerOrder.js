@@ -1,7 +1,5 @@
 const Order = require('../models/modelOrder')
 const Screens = require('../models/modelScreens')
-const Movie = require('../models/modelMovie')
-const Theater = require('../models/modelTheater')
 const serviceResponse = require('@/services/serviceResponse.js')
 const httpCode = require('@/utilities/httpCode')
 
@@ -84,12 +82,21 @@ const controllerOrder = {
     const Orders = await Order.find({ memberId }).select(selectedFields)
     return Orders
   },
+
   async getOrderData (orderId) {
     const selectedFields = 'movieName moviePlayDate moviePlayTime seatOrdered theater_size status userEmail'
     const Orders = await Order.findById({ _id: orderId }).select(selectedFields)
     return Orders
-  }
+  },
 
+  async getOrderCount () {
+    try {
+      const orderCount = await Order.countDocuments()
+      return orderCount
+    } catch (error) {
+      throw serviceResponse.error(httpCode.NOT_FOUND, '無法取得訂單數量')
+    }
+  }
 }
 
 module.exports = controllerOrder

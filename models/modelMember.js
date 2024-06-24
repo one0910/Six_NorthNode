@@ -22,6 +22,11 @@ const memberSchema = new Schema(
       type: String,
       trim: true
     },
+    role: {
+      type: String,
+      default: 'user',
+      enum: ['user', 'admin']
+    },
     phoneNumber: { type: String },
     birthday: { type: Date },
     profilePic: { type: String, default: '' },

@@ -4,7 +4,7 @@ const config = require('@/utilities/config')
 const httpCode = require('@/utilities/httpCode')
 const serviceJWT = {
   generateJWT: (user) => {
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_DAY
     })
 
@@ -15,10 +15,9 @@ const serviceJWT = {
   decode: async (token) => {
     try {
       const payload = await jwt.verify(token, config.JWT_SECRET)
-
       return payload
     } catch (err) {
-      throw serviceResponse.error(httpCode.UNAUTHORIZED, '沒有權限')
+      throw serviceResponse.error(httpCode.UNAUTHORIZED, 'token有誤，批配異常')
     }
   }
 }

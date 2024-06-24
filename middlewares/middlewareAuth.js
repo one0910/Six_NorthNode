@@ -6,7 +6,6 @@ const serviceJWT = require('@/services/serviceJWT')
 const middlewareAuth = {
   loginAuth: serviceError.asyncError(async (req, res, next) => {
     let token = null
-
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith('Bearer')
@@ -19,8 +18,8 @@ const middlewareAuth = {
     }
 
     const decode = await serviceJWT.decode(token)
-
     req.user = decode.id
+    req.role = decode.role
 
     next()
   })

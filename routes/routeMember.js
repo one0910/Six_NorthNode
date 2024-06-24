@@ -6,6 +6,7 @@ const serviceResponse = require('@/services/serviceResponse')
 const httpCode = require('@/utilities/httpCode')
 const middlewareAuth = require('@/middlewares/middlewareAuth')
 const controllerMember = require('@/controllers/controllerMember')
+const help = require('@/utilities/help')
 
 // 註冊
 router.post('/signup', serviceError.asyncError(async (req, res, next) => {
@@ -377,6 +378,39 @@ router.get('/getUser', middlewareAuth.loginAuth, serviceError.asyncError(async (
   serviceResponse.success(res, result)
 }))
 
+// 取得目前所有會員數量
+router.get('/getUserCount',
+  middlewareAuth.loginAuth,
+  serviceError.asyncError(async (req, res, next) => {
+    /**
+     * #swagger.tags = ['User']
+     * #swagger.security = [{ 'apiKeyAuth': [] }]
+     * #swagger.summary = '取得會員資料'
+     * #swagger.description = '取得會員資料'
+      * #swagger.responses[200] = {
+        description: '取得會員資料',
+        schema: {
+          "status": true,
+          "data": {
+            "_id": "644cce67945042a407ed1c21",
+            "email": "z2@gmail.com",
+            "nickName": "使用者暱稱",
+            "profilePic": "",
+            "createdAt": "2023-04-29T07:59:35.033Z",
+            "updatedAt": "2023-04-29T08:08:39.850Z",
+            "__v": 0,
+            "birthday": "2022-02-03T00:00:00.000Z",
+            "phoneNumber": "0912345678"
+          },
+        }
+      }
+     */
+
+    help.checkAdminAccount(req.role)
+    const userCount = await controllerMember.getUserCount()
+    serviceResponse.success(res, { count: userCount })
+  }))
+
 // 修改會員資料
 router.post('/updateUser', middlewareAuth.loginAuth, serviceError.asyncError(async (req, res, next) => {
   /**
@@ -457,7 +491,12 @@ router.get('/checkToken', middlewareAuth.loginAuth, serviceError.asyncError(asyn
       }
     }
    */
-  const { user } = req
+  const { user, role } = req
+
+  // if (role === 'admin') {
+  //   throw serviceResponse.error(httpCode.UNAUTHORIZED, '沒有權限')
+  // }
+
   if (user !== undefined && user !== '') {
     const data = {
       message: '已驗證的使用者'

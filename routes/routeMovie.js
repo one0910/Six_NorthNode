@@ -4,10 +4,13 @@ const serviceError = require('@/services/serviceError')
 const controllerMovie = require('@/controllers/controllerMovie')
 const serviceResponse = require('@/services/serviceResponse')
 const httpCode = require('@/utilities/httpCode')
+const middlewareAuth = require('@/middlewares/middlewareAuth')
 const middlewareAdminAuth = require('@/middlewares/middlewareAdminAuth')
 const Movie = require('../models/modelMovie')
+const help = require('@/utilities/help')
 const mongoose = require('mongoose')
 
+/* 取得某電影的資訊 */
 router.post(
   '/',
   middlewareAdminAuth,
@@ -73,6 +76,7 @@ router.post(
   })
 )
 
+/* 取得某電影的資訊 */
 router.get(
   '/',
   serviceError.asyncError(async (req, res, next) => {
@@ -110,6 +114,45 @@ router.get(
     const movies = await controllerMovie.getMovies(isRelease, id)
     const result = { data: movies }
     serviceResponse.success(res, result)
+  })
+)
+
+/* 取得所有電影的數量 */
+router.get(
+  '/getMovieCount',
+  middlewareAuth.loginAuth,
+  serviceError.asyncError(async (req, res, next) => {
+    /**
+     * #swagger.tags = ['Movie']
+     * #swagger.summary = '獲取電影列表'
+     * #swagger.description = '獲取電影列表'
+     * #swagger.parameters['isRelease'] = { description: '是否上檔', type: 'boolean', default: true }
+     * #swagger.parameters['name'] = { description: '電影名稱模糊搜尋', type: 'string', default: '鋼鐵人' }
+     * #swagger.responses[200] = {
+        description: '回傳範例資料',
+        schema: {
+          "status": true,
+          "data": [
+            {
+              "id": 1,
+              "name": '鋼鐵人',
+              "imgs": ["https://example.com/img1.jpg"],
+              "level": 0,
+              "desc": 'string',
+              "time": 90,
+              "actors": ['jason', 'vivian', 'echo'],
+              "videos": ['https://example.com/video1.mp4'],
+              "status": 1,
+              "release_data": 'yymmdd-hms'
+            }
+          ],
+        }
+      }
+     */
+
+    help.checkAdminAccount(req.role)
+    const movieCount = await controllerMovie.getMovieCount()
+    serviceResponse.success(res, { count: movieCount })
   })
 )
 

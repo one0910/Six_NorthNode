@@ -105,6 +105,15 @@ const controllerMovie = {
     }
   },
 
+  async getMovieCount () {
+    try {
+      const movieCount = await Movie.countDocuments()
+      return movieCount
+    } catch (error) {
+      throw serviceResponse.error(httpCode.NOT_FOUND, '無法取得電影數量')
+    }
+  },
+
   async updateMovie (id, name, level, desc, releaseData) {
     const updatedMovie = await Movie.findByIdAndUpdate(
       id, {
