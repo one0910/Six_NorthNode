@@ -378,8 +378,8 @@ router.get('/getUser', middlewareAuth.loginAuth, serviceError.asyncError(async (
   serviceResponse.success(res, result)
 }))
 
-// 取得目前所有會員數量
-router.get('/getUserCount',
+// 取得目前會員資料
+router.get('/getUserData/:parameter/:daterange',
   middlewareAuth.loginAuth,
   serviceError.asyncError(async (req, res, next) => {
     /**
@@ -407,8 +407,16 @@ router.get('/getUserCount',
      */
 
     help.checkAdminAccount(req.role)
-    const userCount = await controllerMember.getUserCount()
-    serviceResponse.success(res, { count: userCount })
+    const { parameter, daterange } = req.params
+    if (parameter === 'count') {
+      // daterange這個參數則代表它要的範圍
+      const userCount = await controllerMember.getUserCount(daterange)
+      serviceResponse.success(res, { count: userCount })
+    } else if (parameter === 'dataForChart') {
+      console.log('parameter => ', parameter)
+      const orderData = await controllerMember.getUserData({ type: 'dataForChart', payload: daterange })
+      serviceResponse.success(res, { dataForChart: orderData })
+    }
   }))
 
 // 修改會員資料

@@ -9,6 +9,7 @@ const convertPlayDateFormat = (palyDate) => {
 
   return {
     year,
+    month,
     date: dateFormatted,
     time: timeFormatted
   }

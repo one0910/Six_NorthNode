@@ -166,14 +166,14 @@ router.get(
         }
          */
     const orderId = req.query.orderId
-    const order = await controllerOrder.getOrderData(orderId)
+    const order = await controllerOrder.getOrderData({ type: 'memberId', payload: orderId })
     serviceResponse.success(res, order)
   })
 )
 
-/* 取得所有定單的筆數 */
+/* 取得所有定單資料 */
 router.get(
-  '/getOrderCount',
+  '/getOrderData/:parameter/:daterange',
   middlewareAuth.loginAuth,
   serviceError.asyncError(async (req, res, next) => {
     /**
@@ -201,8 +201,15 @@ router.get(
          */
 
     help.checkAdminAccount(req.role)
-    const orderCount = await controllerOrder.getOrderCount()
-    serviceResponse.success(res, { count: orderCount })
+    const { parameter, daterange } = req.params
+    if (parameter === 'count') {
+      // daterange這個參數則代表它要的範圍
+      const orderCount = await controllerOrder.getOrderCount(daterange)
+      serviceResponse.success(res, { count: orderCount })
+    } else if (parameter === 'dataForChart') {
+      const orderData = await controllerOrder.getOrderData({ type: 'dataForChart', payload: daterange })
+      serviceResponse.success(res, { dataForChart: orderData })
+    }
   })
 )
 

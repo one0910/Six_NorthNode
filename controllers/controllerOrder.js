@@ -2,6 +2,7 @@ const Order = require('../models/modelOrder')
 const Screens = require('../models/modelScreens')
 const serviceResponse = require('@/services/serviceResponse.js')
 const httpCode = require('@/utilities/httpCode')
+const convertPlayDateFormat = require('@/utilities/convertPlayDateFormat')
 
 const controllerOrder = {
   async postOrder (req) {
@@ -83,15 +84,66 @@ const controllerOrder = {
     return Orders
   },
 
-  async getOrderData (orderId) {
-    const selectedFields = 'movieName moviePlayDate moviePlayTime seatOrdered theater_size status userEmail'
-    const Orders = await Order.findById({ _id: orderId }).select(selectedFields)
-    return Orders
+  async getOrderData ({ type, payload }) {
+    if (type === 'memberId') {
+      const selectedFields = 'movieName moviePlayDate moviePlayTime seatOrdered theater_size status userEmail'
+      const Orders = await Order.findById({ _id: payload }).select(selectedFields)
+      return Orders
+    } else if (type === 'dataForChart') {
+      const selectedFields = 'createTime quantity total'
+
+      try {
+        const Orders = await Order.find().select(selectedFields)
+        const monthsTemplate = []
+        for (let index = 1; index < 13; index++) {
+          if (index >= 10) {
+            monthsTemplate.push({
+              Month: `${index}`,
+              Box: 0,
+              Total: 0
+            })
+          } else {
+            monthsTemplate.push({
+              Month: `0${index}`,
+              Box: 0,
+              Total: 0
+            })
+          }
+        }
+
+        const newOrders = Orders.reduce((acc, currentValue) => {
+          const { year, month } = convertPlayDateFormat(currentValue.createTime)
+
+          if (!acc[year]) {
+            // 初始化當年的月份資料 ,因此的深拷貝月份的模板進來 , 下面2種方式都可以
+            acc[year] = JSON.parse(JSON.stringify(monthsTemplate))
+            // acc[year] = monthsTemplate.map(monthData => ({ ...monthData }));
+          }
+
+          const monthIndex = acc[year].findIndex(item => item.Month === month)
+          if (monthIndex !== -1) {
+            acc[year][monthIndex].Box += currentValue.quantity
+            acc[year][monthIndex].Total += currentValue.total
+          }
+          return acc
+        }, {})
+
+        return newOrders
+      } catch (error) {
+        throw serviceResponse.error(httpCode.NOT_FOUND, '查不到訂單資料')
+      }
+    }
   },
 
-  async getOrderCount () {
+  async getOrderCount (daterange) {
     try {
-      const orderCount = await Order.countDocuments()
+      let orderCount
+      switch (daterange) {
+        case 'all': orderCount = await Order.countDocuments()
+          break
+        default: orderCount = await Order.countDocuments()
+          break
+      }
       return orderCount
     } catch (error) {
       throw serviceResponse.error(httpCode.NOT_FOUND, '無法取得訂單數量')

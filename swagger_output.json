@@ -972,14 +972,27 @@
         ]
       }
     },
-    "/api/member/getUserCount": {
+    "/api/member/getUserData/{parameter}/{daterange}": {
       "get": {
         "tags": [
           "User"
         ],
         "summary": "取得會員資料",
         "description": "取得會員資料",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "parameter",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "daterange",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "取得會員資料",
@@ -1483,32 +1496,30 @@
         }
       }
     },
-    "/api/movie/getMovieCount": {
+    "/api/movie/getMovieData/{parameter}/{daterange}": {
       "get": {
         "tags": [
-          "Movie"
+          "User"
         ],
-        "summary": "獲取電影列表",
-        "description": "獲取電影列表",
+        "summary": "取得會員資料",
+        "description": "取得會員資料",
         "parameters": [
           {
-            "name": "isRelease",
-            "description": "是否上檔",
-            "type": "boolean",
-            "default": true,
-            "in": "query"
+            "name": "parameter",
+            "in": "path",
+            "required": true,
+            "type": "string"
           },
           {
-            "name": "name",
-            "description": "電影名稱模糊搜尋",
-            "type": "string",
-            "default": "鋼鐵人",
-            "in": "query"
+            "name": "daterange",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "回傳範例資料",
+            "description": "取得會員資料",
             "schema": {
               "type": "object",
               "properties": {
@@ -1517,56 +1528,43 @@
                   "example": true
                 },
                 "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "number",
-                        "example": 1
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "鋼鐵人"
-                      },
-                      "imgs": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      },
-                      "level": {
-                        "type": "number",
-                        "example": 0
-                      },
-                      "desc": {
-                        "type": "string",
-                        "example": "string"
-                      },
-                      "time": {
-                        "type": "number",
-                        "example": 90
-                      },
-                      "actors": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      },
-                      "videos": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      },
-                      "status": {
-                        "type": "number",
-                        "example": 1
-                      },
-                      "release_data": {
-                        "type": "string",
-                        "example": "yymmdd-hms"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "644cce67945042a407ed1c21"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "z2@gmail.com"
+                    },
+                    "nickName": {
+                      "type": "string",
+                      "example": "使用者暱稱"
+                    },
+                    "profilePic": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2023-04-29T07:59:35.033Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2023-04-29T08:08:39.850Z"
+                    },
+                    "__v": {
+                      "type": "number",
+                      "example": 0
+                    },
+                    "birthday": {
+                      "type": "string",
+                      "example": "2022-02-03T00:00:00.000Z"
+                    },
+                    "phoneNumber": {
+                      "type": "string",
+                      "example": "0912345678"
                     }
                   }
                 }
@@ -1576,7 +1574,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/api/movie/{id}": {
@@ -2412,7 +2415,7 @@
         }
       }
     },
-    "/api/order/getOrderCount": {
+    "/api/order/getOrderData/{parameter}/{daterange}": {
       "get": {
         "tags": [
           "Screen"
@@ -2420,6 +2423,18 @@
         "summary": "所選擇電影可上映的日期",
         "description": "傳入screenId，來得到該電影的可訂票日期",
         "parameters": [
+          {
+            "name": "parameter",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "daterange",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "obj",
             "in": "body",

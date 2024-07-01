@@ -105,9 +105,15 @@ const controllerMovie = {
     }
   },
 
-  async getMovieCount () {
+  async getMovieCount (daterange) {
     try {
-      const movieCount = await Movie.countDocuments()
+      let movieCount
+      switch (daterange) {
+        case 'all': movieCount = await Movie.countDocuments()
+          break
+        default: movieCount = await Movie.countDocuments()
+          break
+      }
       return movieCount
     } catch (error) {
       throw serviceResponse.error(httpCode.NOT_FOUND, '無法取得電影數量')

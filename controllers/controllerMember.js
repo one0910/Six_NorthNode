@@ -2,7 +2,7 @@ const hash = require('@/utilities/hash')
 const modelMember = require('@/models/modelMember')
 const serviceResponse = require('@/services/serviceResponse')
 const httpCode = require('@/utilities/httpCode')
-
+const convertPlayDateFormat = require('@/utilities/convertPlayDateFormat')
 const serviceJWT = require('@/services/serviceJWT')
 
 const controllerMember = {
@@ -79,9 +79,58 @@ const controllerMember = {
     return UserData
   },
 
+  // 取得使用者相關資料
+  async getUserData ({ type, payload }) {
+    if (type === 'dataForChart') {
+      const selectedFields = 'createdAt'
+      try {
+        const Users = await modelMember.find().select(selectedFields)
+        const monthsTemplate = []
+        for (let index = 1; index < 13; index++) {
+          if (index >= 10) {
+            monthsTemplate.push({
+              Month: `${index}`,
+              Total: 0
+            })
+          } else {
+            monthsTemplate.push({
+              Month: `0${index}`,
+              Total: 0
+            })
+          }
+        }
+
+        const newUsers = Users.reduce((acc, currentValue) => {
+          const { year, month } = convertPlayDateFormat(currentValue.createdAt)
+          if (!acc[year]) {
+            // 初始化當年的月份資料 ,因此的深拷貝月份的模板進來 , 下面2種方式都可以
+            acc[year] = JSON.parse(JSON.stringify(monthsTemplate))
+            // acc[year] = monthsTemplate.map(monthData => ({ ...monthData }));
+          }
+
+          const monthIndex = acc[year].findIndex(item => item.Month === month)
+          if (monthIndex !== -1) {
+            acc[year][monthIndex].Total += 1
+          }
+          return acc
+        }, {})
+
+        return newUsers
+      } catch (error) {
+        throw serviceResponse.error(httpCode.NOT_FOUND, '查不到訂單資料')
+      }
+    }
+  },
+
   // 取得目前所有會員數量
-  async getUserCount (user) {
-    const userCount = await modelMember.countDocuments({ role: 'user' })
+  async getUserCount (daterange) {
+    let userCount
+    switch (daterange) {
+      case 'all': userCount = await modelMember.countDocuments({ role: 'user' })
+        break
+      default: userCount = await modelMember.countDocuments({ role: 'user' })
+        break
+    }
     return userCount
   },
 
@@ -94,6 +143,7 @@ const controllerMember = {
     )
     return result
   },
+
   async googleLogin (userData) {
     const googleMemberData = await modelMember.findOne({ googleId: userData.id })
     if (googleMemberData) {

@@ -117,44 +117,43 @@ router.get(
   })
 )
 
-/* 取得所有電影的數量 */
-router.get(
-  '/getMovieCount',
+/* 取得所有電影的相關資料 */
+router.get('/getMovieData/:parameter/:daterange',
   middlewareAuth.loginAuth,
   serviceError.asyncError(async (req, res, next) => {
     /**
-     * #swagger.tags = ['Movie']
-     * #swagger.summary = '獲取電影列表'
-     * #swagger.description = '獲取電影列表'
-     * #swagger.parameters['isRelease'] = { description: '是否上檔', type: 'boolean', default: true }
-     * #swagger.parameters['name'] = { description: '電影名稱模糊搜尋', type: 'string', default: '鋼鐵人' }
-     * #swagger.responses[200] = {
-        description: '回傳範例資料',
+     * #swagger.tags = ['User']
+     * #swagger.security = [{ 'apiKeyAuth': [] }]
+     * #swagger.summary = '取得會員資料'
+     * #swagger.description = '取得會員資料'
+      * #swagger.responses[200] = {
+        description: '取得會員資料',
         schema: {
           "status": true,
-          "data": [
-            {
-              "id": 1,
-              "name": '鋼鐵人',
-              "imgs": ["https://example.com/img1.jpg"],
-              "level": 0,
-              "desc": 'string',
-              "time": 90,
-              "actors": ['jason', 'vivian', 'echo'],
-              "videos": ['https://example.com/video1.mp4'],
-              "status": 1,
-              "release_data": 'yymmdd-hms'
-            }
-          ],
+          "data": {
+            "_id": "644cce67945042a407ed1c21",
+            "email": "z2@gmail.com",
+            "nickName": "使用者暱稱",
+            "profilePic": "",
+            "createdAt": "2023-04-29T07:59:35.033Z",
+            "updatedAt": "2023-04-29T08:08:39.850Z",
+            "__v": 0,
+            "birthday": "2022-02-03T00:00:00.000Z",
+            "phoneNumber": "0912345678"
+          },
         }
       }
      */
 
     help.checkAdminAccount(req.role)
-    const movieCount = await controllerMovie.getMovieCount()
-    serviceResponse.success(res, { count: movieCount })
-  })
-)
+    const { parameter, daterange } = req.params
+    // 若是前端進來的參數為count，則代表需要user的數量
+    if (parameter === 'count') {
+      // daterange這個參數則代表它要的範圍
+      const userCount = await controllerMovie.getMovieCount(daterange)
+      serviceResponse.success(res, { count: userCount })
+    }
+  }))
 
 router.patch(
   '/:id',
