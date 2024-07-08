@@ -347,6 +347,109 @@ router.post('/changePassword',
     serviceResponse.success(res, result)
   }))
 
+// 管理頁面 - 新增會員
+router.post('/createAccount',
+  middlewareAuth.loginAuth,
+  serviceError.asyncError(async (req, res, next) => {
+  /**
+   * #swagger.tags = ['User']
+   * #swagger.summary = '會員註冊'
+   * #swagger.description = '會員註冊'
+   * #swagger.parameters['body'] = {
+      in: 'body',
+      type: 'object',
+      required: 'true',
+      description: '會員註冊用',
+      schema:{
+              "$email": 'example@gmail.com',
+              "$password": 'password',
+              "$nickName":'nickname',
+          }
+    }
+    * #swagger.responses[200] = {
+      description: '註冊成功',
+      schema: {
+        "status": true,
+        "data": {
+          "token": "token",
+          "createRes":{
+            "email": "example@gmail.com",
+            "profilePic": "/images/profilePic.jpeg",
+            "nickName": "nickname",
+            "_id": "mongoId",
+            "createdAt": "2023-04-26T15:47:12.219Z",
+            "updatedAt": "2023-04-26T15:47:12.219Z",
+            "__v": 0
+          }
+        },
+      }
+    }
+    * #swagger.responses[402] = {
+      description: '信箱、密碼、暱稱不可空白',
+      schema: {
+        "status": false,
+        "message": "信箱、密碼、暱稱不可空白",
+        "error": {
+          "statusCode": 402,
+          "isOperational": true
+        },
+      }
+    }
+    * #swagger.responses[400] = {
+      description: 'email格式錯誤',
+      schema: {
+        "status": false,
+        "message": "信箱格式錯誤",
+        "error": {
+          "statusCode": 400,
+          "isOperational": true
+        },
+      }
+    }
+    * #swagger.responses[406] = {
+      description: '信箱重複',
+      schema: {
+        "status": false,
+        "message": "信箱重複",
+        "error": {
+        "statusCode": 406,
+        "isOperational": true
+        },
+      }
+    }
+    * #swagger.responses[400] = {
+      description: '密碼強度',
+      schema: {
+        "status": false,
+        "message": "密碼長度至少8位、須包含數字與英文",
+        "error": {
+        "statusCode": 400,
+        "isOperational": true
+        },
+      }
+    }
+    */
+
+    help.checkAdminAccount(req.role)
+    const { email, password, nickName, phoneNumber, birthday, profilePic, role } = req.body
+
+    if (!email || !password || !nickName) {
+      throw serviceResponse.error(httpCode.PAYMENT_REQUIRED, '信箱、密碼、暱稱不可空白')
+    }
+
+    if (!validator.isEmail(email)) {
+      throw serviceResponse.error(httpCode.BAD_REQUEST, '信箱格式錯誤')
+    }
+
+    // if (!validator.isStrongPassword(password, { minLength: 8, minSymbols: 0, minUppercase: 0 })) {
+    //   throw serviceResponse.error(httpCode.BAD_REQUEST, '密碼長度至少8位、須包含數字與英文')
+    // }
+
+    const result = await controllerMember.createAccount({ email, password, nickName, birthday, phoneNumber, profilePic, role })
+    serviceResponse.success(res, result)
+  })
+)
+
 // 取得會員資料
 router.get('/getUser', middlewareAuth.loginAuth, serviceError.asyncError(async (req, res, next) => {
   /**
@@ -378,7 +481,7 @@ router.get('/getUser', middlewareAuth.loginAuth, serviceError.asyncError(async (
   serviceResponse.success(res, result)
 }))
 
-// 取得目前會員資料
+// 管理員頁面 - 取得目前會員資料
 router.get('/getUserData/:parameter/:daterange',
   middlewareAuth.loginAuth,
   serviceError.asyncError(async (req, res, next) => {
@@ -412,14 +515,13 @@ router.get('/getUserData/:parameter/:daterange',
       // daterange這個參數則代表它要的範圍
       const userCount = await controllerMember.getUserCount(daterange)
       serviceResponse.success(res, { count: userCount })
-    } else if (parameter === 'dataForChart') {
-      console.log('parameter => ', parameter)
-      const orderData = await controllerMember.getUserData({ type: 'dataForChart', payload: daterange })
-      serviceResponse.success(res, { dataForChart: orderData })
+    } else {
+      const orderData = await controllerMember.getUserData({ type: parameter, payload: daterange })
+      serviceResponse.success(res, { [parameter]: orderData })
     }
   }))
 
-// 修改會員資料
+// 會員頁面 - 修改會員資料
 router.post('/updateUser', middlewareAuth.loginAuth, serviceError.asyncError(async (req, res, next) => {
   /**
    * #swagger.tags = ['User']
@@ -456,11 +558,32 @@ router.post('/updateUser', middlewareAuth.loginAuth, serviceError.asyncError(asy
       }
     }
    */
-  const { nickName, phoneNumber, birthday, profilePic } = req.body
-  const { user } = req
-  const result = await controllerMember.updateUser({ user, nickName, phoneNumber, birthday, profilePic })
+  const { nickName, phoneNumber, birthday, profilePic, role } = req.body
+  const id = req.user
+  const result = await controllerMember.updateUser(id, { nickName, phoneNumber, birthday, profilePic, role })
   serviceResponse.success(res, result)
 }))
+
+// 管理頁面 - 修改會員資料
+router.patch('/updateUser/:id',
+  middlewareAuth.loginAuth,
+  serviceError.asyncError(async (req, res, next) => {
+    help.checkAdminAccount(req.role)
+    const { id } = req.params
+    const { email, nickName, phoneNumber, birthday, profilePic, role } = req.body
+    const result = await controllerMember.updateUser(id, { email, nickName, phoneNumber, birthday, profilePic, role })
+    serviceResponse.success(res, result)
+  }))
+
+// 管理頁面 - 刪除會員資料
+router.delete('/deleteUser/:id',
+  middlewareAuth.loginAuth,
+  serviceError.asyncError(async (req, res, next) => {
+    help.checkAdminAccount(req.role)
+    const { id } = req.params
+    const result = await controllerMember.deleteUser(id)
+    serviceResponse.success(res, result)
+  }))
 
 // 檢查是否登入
 router.get('/checkToken', middlewareAuth.loginAuth, serviceError.asyncError(async (req, res, next) => {

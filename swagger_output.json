@@ -899,6 +899,201 @@
         ]
       }
     },
+    "/api/member/createAccount": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "會員註冊",
+        "description": "會員註冊",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "type": "object",
+            "required": "true",
+            "description": "會員註冊用",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "example@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                },
+                "nickName": {
+                  "type": "string",
+                  "example": "nickname"
+                }
+              },
+              "required": [
+                "email",
+                "password",
+                "nickName"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "註冊成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "token"
+                    },
+                    "createRes": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "example": "example@gmail.com"
+                        },
+                        "profilePic": {
+                          "type": "string",
+                          "example": "/images/profilePic.jpeg"
+                        },
+                        "nickName": {
+                          "type": "string",
+                          "example": "nickname"
+                        },
+                        "_id": {
+                          "type": "string",
+                          "example": "mongoId"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2023-04-26T15:47:12.219Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2023-04-26T15:47:12.219Z"
+                        },
+                        "__v": {
+                          "type": "number",
+                          "example": 0
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "密碼強度",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "密碼長度至少8位、須包含數字與英文"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 400
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "402": {
+            "description": "信箱、密碼、暱稱不可空白",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "信箱、密碼、暱稱不可空白"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 402
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "406": {
+            "description": "信箱重複",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "信箱重複"
+                },
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 406
+                    },
+                    "isOperational": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/member/getUser": {
       "get": {
         "tags": [
@@ -1158,6 +1353,36 @@
             "apiKeyAuth": []
           }
         ]
+      }
+    },
+    "/api/member/updateUser/{id}": {
+      "patch": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/member/deleteUser/{id}": {
+      "delete": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
       }
     },
     "/api/member/checkToken": {

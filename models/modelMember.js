@@ -28,12 +28,18 @@ const memberSchema = new Schema(
       enum: ['user', 'admin']
     },
     phoneNumber: { type: String },
-    birthday: { type: Date },
+    birthday: {
+      type: Date,
+      default: ''
+    },
     profilePic: { type: String, default: '' },
     order: { type: Schema.Types.ObjectId, ref: 'Order' },
     googleId: { type: String }
   },
-  { timestamps: true, versionKey: false }
+  {
+    timestamps: true,
+    toJSON: { versionKey: false }
+  }
 )
 
 const member = model('member', memberSchema)

@@ -2,10 +2,8 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "blueprint.templatesPath": [
-    ".vscode/blueprint-templates"
-  ],
+  "blueprint.templatesPath": [".vscode/blueprint-templates"],
   "[javascript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   }
 }

@@ -73,13 +73,31 @@ const controllerMember = {
 
     return result
   },
+
+  // 管理頁面 - 新增會員
+  async createAccount (data) {
+    const newPassword = await hash.password(data.password)
+    const createData = {
+      ...data,
+      password: newPassword
+    }
+    try {
+      const createRes = await modelMember.create(createData)
+      const { password, ...result } = createRes.toObject()
+      return result
+    } catch (error) {
+      console.log(' error=> ', error.name, error.message)
+      throw serviceResponse.error(httpCode.NOT_FOUND, `${error.name} : ${error.message}`)
+    }
+  },
+
   // 取得會員資料
   async getUser (user) {
     const UserData = await modelMember.findById({ _id: user })
     return UserData
   },
 
-  // 取得使用者相關資料
+  // 管理頁面 - 取得使用者相關資料
   async getUserData ({ type, payload }) {
     if (type === 'dataForChart') {
       const selectedFields = 'createdAt'
@@ -117,7 +135,14 @@ const controllerMember = {
 
         return newUsers
       } catch (error) {
-        throw serviceResponse.error(httpCode.NOT_FOUND, '查不到訂單資料')
+        throw serviceResponse.error(httpCode.NOT_FOUND, '查不到使用者資料')
+      }
+    } else if (type === 'dataForManagement') {
+      try {
+        const Users = await modelMember.find()
+        return Users
+      } catch (error) {
+        throw serviceResponse.error(httpCode.NOT_FOUND, '查不到使用者資料')
       }
     }
   },
@@ -134,14 +159,31 @@ const controllerMember = {
     return userCount
   },
 
-  // 修改會員資料
-  async updateUser ({ user, nickName, phoneNumber, birthday, profilePic }) {
-    const result = await modelMember.findByIdAndUpdate(
-      user,
-      { nickName, phoneNumber, birthday, profilePic },
-      { returnDocument: 'after', runValidators: true, new: true }
-    )
-    return result
+  // 管理頁面 - 修改會員資料
+  async updateUser (id, { email, nickName, phoneNumber, birthday, profilePic, role }) {
+    try {
+      const result = await modelMember.findByIdAndUpdate(
+        id,
+        { email, nickName, phoneNumber, birthday, profilePic, role },
+        { returnDocument: 'after', runValidators: true, new: true }
+      )
+      return result
+    } catch (error) {
+      console.log(' error=> ', error.name, error.message)
+      throw serviceResponse.error(httpCode.NOT_FOUND, `${error.name} : ${error.message}`)
+    }
+  },
+
+  // 管理頁面 - 刪除會員資料
+  async deleteUser (id) {
+    try {
+      await modelMember.findByIdAndDelete(id)
+      const allMembers = await modelMember.find()
+      return allMembers
+    } catch (error) {
+      console.log(' error=> ', error.name, error.message)
+      throw serviceResponse.error(httpCode.NOT_FOUND, `${error.name} : ${error.message}`)
+    }
   },
 
   async googleLogin (userData) {

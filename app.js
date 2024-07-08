@@ -38,7 +38,7 @@ app.use(express.static(path.join(__dirname, 'public'))) // 設定 express 可以
 app.use(cors({
   origin: config.FRONTEND_HOST,
   // origin: '*',
-  methods: 'GET,POST,PUT,DELETE,PUT',
+  methods: 'GET,POST,PUT,PATCH,DELETE',
   credentials: true
 }))
 
