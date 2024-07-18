@@ -32,6 +32,19 @@ const controllerMovie = {
     return newMovie
   },
 
+  // 管理頁面 - 取得使用者相關資料
+  async getMovieData ({ type, payload }) {
+    if (type === 'dataForManagement') {
+      try {
+        const Movies = await Movie.find()
+        // console.log(' Movies=> ',Movies)
+        return Movies
+      } catch (error) {
+        throw serviceResponse.error(httpCode.NOT_FOUND, `${error.name} : ${error.message}`)
+      }
+    }
+  },
+
   async getMovies (isRelease, id) {
     const today = new Date().setHours(0, 0, 0, 0)
     const selectedFields = 'imgs name id releaseData'
@@ -105,6 +118,7 @@ const controllerMovie = {
     }
   },
 
+  // 取得目前所有會員數量
   async getMovieCount (daterange) {
     try {
       let movieCount

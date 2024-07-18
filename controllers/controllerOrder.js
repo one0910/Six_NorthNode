@@ -78,12 +78,14 @@ const controllerOrder = {
     return orderResponse
   },
 
+  // 會員頁面 - 取得訂單資料
   async getMemberOrder (memberId) {
     const selectedFields = 'movieName movielevel moviePlayDate moviePlayTime theater_size quantity seatOrdered createTime price payMethod total'
     const Orders = await Order.find({ memberId }).select(selectedFields)
     return Orders
   },
 
+  // 管理頁面 - 取得訂單所有資料
   async getOrderData ({ type, payload }) {
     if (type === 'memberId') {
       const selectedFields = 'movieName moviePlayDate moviePlayTime seatOrdered theater_size status userEmail'
@@ -132,9 +134,17 @@ const controllerOrder = {
       } catch (error) {
         throw serviceResponse.error(httpCode.NOT_FOUND, '查不到訂單資料')
       }
+    } else if (type === 'dataForManagement') {
+      try {
+        const Orders = await Order.find()
+        return Orders
+      } catch (error) {
+        throw serviceResponse.error(httpCode.NOT_FOUND, `${error.name} : ${error.message}`)
+      }
     }
   },
 
+  // 管理頁面 - 取得訂單筆數
   async getOrderCount (daterange) {
     try {
       let orderCount
@@ -147,6 +157,69 @@ const controllerOrder = {
       return orderCount
     } catch (error) {
       throw serviceResponse.error(httpCode.NOT_FOUND, '無法取得訂單數量')
+    }
+  },
+
+  // 管理頁面 - 更新訂單資料
+  async updateOrder (id, updatData) {
+    try {
+      await Order.findByIdAndUpdate(
+        id,
+        updatData,
+        { returnDocument: 'after', runValidators: true, new: true }
+      )
+      /* 由於前端使用了Redux的RTK-Query，它有個標籤設置的機制，可以自動來抓取getOrderData API資料
+        所以這邊只要再更新成功後，直接回傳'更新成功'的字串就好了，
+        所以就不用像以之前一樣，再回傳全部的ducument或是更新後的單一docuement
+      */
+      return '更新成功'
+    } catch (error) {
+      console.log(' error=> ', error.name, error.message)
+      throw serviceResponse.error(httpCode.NOT_FOUND, `${error.name} : ${error.message}`)
+    }
+  },
+
+  // 管理頁面 - 刪除訂單
+  async deleteOrder (id, deleteData) {
+    const { screenId, seatOrdered } = deleteData
+    /* 將 ['A排4號、'B排2號']這樣的資料轉成['A4','B2'] */
+    const seatIds = seatOrdered.map(seat => seat.replace(/排|號/g, ''))
+    try {
+      // 先更新其Screens document的座位
+      const updateResult = await Screens.findByIdAndUpdate(
+        screenId,
+        {
+          $set: {
+            'seatsStatus.$[seat].is_booked': false
+          }
+        },
+        {
+          arrayFilters: [{ 'seat.seat_id': { $in: seatIds } }],
+          new: true,
+          runValidators: true
+        }
+      )
+      // 再來從新取得Screens的可訂位的座位數量
+      const availableSeats = updateResult.seatsStatus.filter(seat => !seat.is_booked).length
+
+      // 再將其座位數量寫回sereen的docuemnt裡
+      await Screens.findByIdAndUpdate(
+        screenId,
+        {
+          $set: { availableSeats }
+        },
+        {
+          new: true,
+          runValidators: true
+        }
+      )
+
+      // 上面將screen的座位更新後(更新其座位狀態及數量)，最後再將該Order刪除
+      await Order.findByIdAndDelete(id)
+      return '刪除成功'
+    } catch (error) {
+      console.log(' error=> ', error.name, error.message)
+      throw serviceResponse.error(httpCode.NOT_FOUND, `${error.name} : ${error.message}`)
     }
   }
 }

@@ -206,11 +206,67 @@ router.get(
       // daterange這個參數則代表它要的範圍
       const orderCount = await controllerOrder.getOrderCount(daterange)
       serviceResponse.success(res, { count: orderCount })
-    } else if (parameter === 'dataForChart') {
-      const orderData = await controllerOrder.getOrderData({ type: 'dataForChart', payload: daterange })
-      serviceResponse.success(res, { dataForChart: orderData })
+    } else {
+      const orderData = await controllerOrder.getOrderData({ type: parameter, payload: daterange })
+      serviceResponse.success(res, { [parameter]: orderData })
     }
   })
 )
+
+// 管理頁面 - 修改訂單資料
+router.patch('/updateOrder/:id',
+  middlewareAuth.loginAuth,
+  serviceError.asyncError(async (req, res, next) => {
+  /**
+   * #swagger.tags = ['User']
+   * #swagger.security = [{ 'apiKeyAuth': [] }]
+   * #swagger.summary = '修改會員資料'
+   * #swagger.description = '修改會員資料'
+   * * #swagger.parameters['body'] = {
+      in: 'body',
+      type: 'object',
+      required: 'true',
+      description: '修改會員資料用',
+      schema:{
+              "nickName": '使用者暱稱',
+              "phoneNumber": '0912345678',
+              "birthday":'Sat Apr 29 2023 16:20:13 GMT+0800 (台北標準時間)或2020-01-01',
+              "profilePic":'上傳圖片回傳的URL'
+          }
+    }
+    * #swagger.responses[200] = {
+      description: '修改會員資料',
+      schema: {
+        "status": true,
+        "data": {
+          "_id": "644cce67945042a407ed1c21",
+          "email": "z2@gmail.com",
+          "nickName": "使用者暱稱",
+          "profilePic": "上傳圖片回傳的URL",
+          "createdAt": "2023-04-29T07:59:35.033Z",
+          "updatedAt": "2023-04-29T08:14:38.516Z",
+          "__v": 0,
+          "birthday": "2023-04-29T08:14:30.000Z",
+          "phoneNumber": "0912345678"
+        },
+      }
+    }
+   */
+
+    help.checkAdminAccount(req.role)
+    const { id } = req.params
+    const result = await controllerOrder.updateOrder(id, req.body)
+    serviceResponse.success(res, result)
+  }))
+
+// 管理頁面 - 刪除會員資料
+router.delete('/deleteOrder/:id',
+  middlewareAuth.loginAuth,
+  serviceError.asyncError(async (req, res, next) => {
+    help.checkAdminAccount(req.role)
+    const { id } = req.params
+    const result = await controllerOrder.deleteOrder(id, req.body)
+    serviceResponse.success(res, result)
+  }))
 
 module.exports = router

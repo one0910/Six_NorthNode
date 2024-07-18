@@ -4,7 +4,7 @@ const httpCode = require('@/utilities/httpCode')
 const help = {
   checkAdminAccount: (role) => {
     console.log('role => ', role)
-    if (role !== 'admin') {
+    if (role === 'user') {
       throw serviceResponse.error(httpCode.UNAUTHORIZED, '非管理者帳號，無權限進入此頁')
     }
   }

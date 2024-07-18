@@ -516,8 +516,8 @@ router.get('/getUserData/:parameter/:daterange',
       const userCount = await controllerMember.getUserCount(daterange)
       serviceResponse.success(res, { count: userCount })
     } else {
-      const orderData = await controllerMember.getUserData({ type: parameter, payload: daterange })
-      serviceResponse.success(res, { [parameter]: orderData })
+      const userData = await controllerMember.getUserData({ type: parameter, payload: daterange })
+      serviceResponse.success(res, { [parameter]: userData })
     }
   }))
 

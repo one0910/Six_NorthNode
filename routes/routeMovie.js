@@ -152,6 +152,9 @@ router.get('/getMovieData/:parameter/:daterange',
       // daterange這個參數則代表它要的範圍
       const userCount = await controllerMovie.getMovieCount(daterange)
       serviceResponse.success(res, { count: userCount })
+    } else {
+      const orderData = await controllerMovie.getMovieData({ type: parameter, payload: daterange })
+      serviceResponse.success(res, { [parameter]: orderData })
     }
   }))
 

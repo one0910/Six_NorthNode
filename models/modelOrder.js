@@ -76,11 +76,10 @@ const orderSchema = new mongoose.Schema(
     createTime: {
       type: Date,
       default: Date.now,
-      select: false,
       required: true
     }
   }, {
-    versionKey: false,
+    timestamps: true,
     toJSON: {
       versionKey: false,
       virtuals: true

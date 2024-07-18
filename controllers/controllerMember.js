@@ -117,7 +117,6 @@ const controllerMember = {
             })
           }
         }
-
         const newUsers = Users.reduce((acc, currentValue) => {
           const { year, month } = convertPlayDateFormat(currentValue.createdAt)
           if (!acc[year]) {

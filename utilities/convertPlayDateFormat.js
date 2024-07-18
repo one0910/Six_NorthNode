@@ -6,7 +6,6 @@ const convertPlayDateFormat = (palyDate) => {
   const day = date.toISOString().substring(8, 10)
   const dateFormatted = `${month}/${day}`
   const timeFormatted = date.toISOString().substring(11, 16)
-
   return {
     year,
     month,
