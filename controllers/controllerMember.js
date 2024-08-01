@@ -68,7 +68,7 @@ const controllerMember = {
     }
 
     const result = {
-      message: `${email} 可以使用`
+      message: `${email}`
     }
 
     return result

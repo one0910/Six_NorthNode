@@ -37,7 +37,6 @@ const controllerMovie = {
     if (type === 'dataForManagement') {
       try {
         const Movies = await Movie.find()
-        // console.log(' Movies=> ',Movies)
         return Movies
       } catch (error) {
         throw serviceResponse.error(httpCode.NOT_FOUND, `${error.name} : ${error.message}`)
@@ -47,7 +46,7 @@ const controllerMovie = {
 
   async getMovies (isRelease, id) {
     const today = new Date().setHours(0, 0, 0, 0)
-    const selectedFields = 'imgs name id releaseData'
+    const selectedFields = 'imgs name id releaseData level'
     if (!id && isRelease === 'true') {
       const result = await Movie.find({ releaseData: { $lt: today } })
         .select(selectedFields)
