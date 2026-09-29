@@ -38,7 +38,7 @@ const controllerEcpayCheck = {
     const baseParam = {
       MerchantTradeNo, // 請帶20碼uid, ex: f0a0d7e9fae1bb72bc93
       // MerchantTradeDate: '2023/09/01 15:45:30', // ex: 2017/02/13 15:45:30
-      MerchantTradeDate, // ex: 2017/02/13 15:45:30
+      MerchantTradeDate: '2026/09/29 17:49:56',
       TotalAmount: (req.body.total).toString(),
       TradeDesc: '爽影票綠界金流測試',
       ItemName: `爽影票電影 - ${req.body.movie_name} [${req.body.theater_size}]`,

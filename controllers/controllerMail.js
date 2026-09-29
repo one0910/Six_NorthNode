@@ -94,7 +94,7 @@ const controllerMail = {
       html: htmlContent
     }
 
-    await transporter.sendMail(mailOptions)
+    // await transporter.sendMail(mailOptions)
     return '寄送成功'
   }
 }
